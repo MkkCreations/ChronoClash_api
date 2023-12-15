@@ -1,0 +1,5 @@
+
+GET /api/auth/me HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkMGNiNzQ4ZC1iMWFhLTRiNDktOGI1My0yYTMxMzczMmQ3NDEiLCJpc3MiOiJNeUFwcCIsImV4cCI6MTcwMjI2NjkyNywiaWF0IjoxNzAyMjY1MTI3fQ.89ANWlGrM2xDA7kfwIxtBGyujcj6fnkoCyW84eMKixlz-gbhQqOn6npFb7YTVKEBiY8KcTr3hd1A2ouoZaMAyA
