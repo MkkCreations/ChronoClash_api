@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>iut.chronoclash</groupId>
-    <artifactId>ChronoClash_api</artifactId>
+    <artifactId>ChronoBattle_api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>ChronoClash_api</name>
     <description>ChronoClash_api</description>
