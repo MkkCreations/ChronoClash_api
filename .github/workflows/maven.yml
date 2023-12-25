@@ -27,6 +27,20 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+    - name: install docker compose
+      run: |
+        sudo apt-get remove docker docker-engine docker.io containerd runc
+        sudo apt-get update
+        sudo apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+        echo \
+        "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+        $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+        sudo apt-get update
+        sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+        sudo apt-get install -y docker compose
+    - name: Run docker compose
+      run: docker compose up -d
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
