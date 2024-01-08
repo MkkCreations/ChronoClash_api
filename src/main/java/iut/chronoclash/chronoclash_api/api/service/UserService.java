@@ -13,10 +13,14 @@ import java.util.*;
 
 @Service
 public class UserService implements UserDetailsService {
-    @Autowired
     UserRepository userRepository;
-    @Autowired
     LogService logService;
+
+    @Autowired
+    public UserService(UserRepository userRepository, LogService logService) {
+        this.userRepository = userRepository;
+        this.logService = logService;
+    }
 
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
