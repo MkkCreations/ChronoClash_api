@@ -1,7 +1,10 @@
 package iut.chronoclash.chronoclash_api.api.service;
 
+import iut.chronoclash.chronoclash_api.api.model.Game;
+import iut.chronoclash.chronoclash_api.api.model.Level;
 import iut.chronoclash.chronoclash_api.api.model.Operation;
 import iut.chronoclash.chronoclash_api.api.model.User;
+import iut.chronoclash.chronoclash_api.api.repository.GameRepository;
 import iut.chronoclash.chronoclash_api.api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,6 +18,8 @@ import java.util.*;
 public class UserService implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    GameRepository gameRepository;
     @Autowired
     LogService logService;
 
@@ -38,6 +43,8 @@ public class UserService implements UserDetailsService {
         user.setName(newUser.getName());
         user.setEmail(newUser.getEmail());
         user.setImage(newUser.getImage());
+        user.setLevel(newUser.getLevel());
+        user.setGames(newUser.getGames());
 
         Operation operation = new Operation();
         operation.setType("update");
@@ -48,8 +55,31 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
+    public boolean isUsernameTaken(String username) {
+        return userRepository.findByUsername(username).isPresent();
+    }
+
+    public boolean isEmailTaken(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
     public User create(User user) {
+        Level level = new Level();
+        level.setOwner(user);
+        level.setXp(0);
+        level.setLevel(1);
+        user.setLevel(level);
         return userRepository.save(user);
     }
 
+    public User updateLevel(User user, int xp) {
+        Level level = user.getLevel();
+        level.setXp(level.getXp() + xp);
+        if (level.getXp() >= 100) {
+            level.setXp(level.getXp() - 100);
+            level.setLevel(level.getLevel() + 1);
+        }
+        user.setLevel(level);
+        return user;
+    }
 }

@@ -1,11 +1,11 @@
 
 POST /api/auth/signup HTTP/1.1
-Host: localhost:8080
+Host: localhost:8081
 Content-Type: application/json
 
 {
-    "name": "name",
-    "username": "user",
+    "name": "Mohamed",
+    "username": "moha",
     "password": "password",
-    "email": "email@email.com"
+    "email": "moha@email.com"
 }

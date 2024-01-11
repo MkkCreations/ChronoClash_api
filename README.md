@@ -8,7 +8,7 @@ This is the server for the Chronoclash game. It is a simple REST API that allows
 1. Clone the repository
 2. Run `docker compose up -d database` to start the database
 3. Run the project in your IDE
-4. The server will be running on port `8080`
+4. The server will be running on port `8081`
 5. The database will be running on port `3308`
 
 ## Usage
