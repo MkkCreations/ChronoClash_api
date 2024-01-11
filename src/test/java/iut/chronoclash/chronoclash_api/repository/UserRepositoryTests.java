@@ -20,7 +20,7 @@ class UserRepositoryTests {
 
     @BeforeEach
     void setUp() {
-        user = new User("name", "username", "email", "password", "image", "role", null);
+        user = new User("name", "username", "email", "password", "image", "role", null, null, null);
     }
 
     @Test

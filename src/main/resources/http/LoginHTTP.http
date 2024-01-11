@@ -4,6 +4,6 @@ Host: localhost:8081
 Content-Type: application/json
 
 {
-    "username": "user",
+    "username": "moha",
     "password": "password"
 }

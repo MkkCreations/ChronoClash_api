@@ -12,10 +12,10 @@ import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -26,40 +26,59 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(unique = true)
     String id;
+
     @NonNull
     @Column
     private String name;
+
     @NonNull
     @Column(unique = true)
     private String username;
+
     @NonNull
     @Column(unique = true)
     private String email;
+
     @JsonIgnore
     @NonNull
     @Column
     private String password;
+
     @Nullable
     @Column
     private String image;
+
     @Nullable
     @Column
     private String role;
+
     @Nullable
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     @JsonIgnore
     private List<RefreshToken> refreshToken;
+
     @Nullable
     @JsonManagedReference
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     @Fetch(FetchMode.JOIN)
     private List<Log> logs;
 
+    @JsonManagedReference
+    @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Fetch(FetchMode.JOIN)
+    private Level level;
+
+    @Nullable
+    @JsonManagedReference
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Fetch(FetchMode.JOIN)
+    private List<Game> games;
+
     public User() {
     }
 
-    public User(String name, String username, String email, String password, String image, String role, List<Log> logs) {
+    public User(String name, String username, String email, String password, String image, String role, List<Log> logs, Level level, List<Game> games) {
         this.name = name;
         this.username = username;
         this.email = email;
@@ -67,6 +86,8 @@ public class User implements UserDetails {
         this.image = image;
         this.role = role;
         this.logs = logs;
+        this.level = level;
+        this.games = games;
     }
 
     @Override

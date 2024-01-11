@@ -44,11 +44,6 @@ public class AuthREST {
     LogService logService;
     String invalidToken = "invalid token";
 
-    @GetMapping("/me")
-    public ResponseEntity<?> me(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(user);
-    }
-
     @PostMapping("/login")
     @Transactional
     public ResponseEntity<?> login(@RequestBody LoginDTO dto) {
@@ -75,8 +70,13 @@ public class AuthREST {
     @PostMapping("/signup")
     @Transactional
     public ResponseEntity<?> signup(@Valid @RequestBody SignupDTO dto) {
-        User user = new User(dto.getName(), dto.getUsername(), dto.getEmail(), passwordEncoder.encode(dto.getPassword()), dto.getImage(), "USER", null);
-        userRepository.save(user);
+        if (userService.isUsernameTaken(dto.getUsername())) {
+            return ResponseEntity.badRequest().body("username already exists");
+        } else if (userService.isEmailTaken(dto.getEmail())) {
+            return ResponseEntity.badRequest().body("email already exists");
+        }
+        User user = new User(dto.getName(), dto.getUsername(), dto.getEmail(), passwordEncoder.encode(dto.getPassword()), dto.getImage(), "USER", null, null, null);
+        userService.create(user);
 
         return getResponseEntity(user);
     }
