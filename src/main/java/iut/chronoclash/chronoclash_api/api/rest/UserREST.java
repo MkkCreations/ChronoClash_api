@@ -1,6 +1,7 @@
 package iut.chronoclash.chronoclash_api.api.rest;
 
 import iut.chronoclash.chronoclash_api.api.dto.GameDTO;
+import iut.chronoclash.chronoclash_api.api.dto.TokenDTO;
 import iut.chronoclash.chronoclash_api.api.model.Game;
 import iut.chronoclash.chronoclash_api.api.model.Operation;
 import iut.chronoclash.chronoclash_api.api.model.User;
@@ -42,6 +43,6 @@ public class UserREST {
         );
         operation.setDate(new Date().toString());
         logService.createLog("Game", operation, user);
-        return ResponseEntity.ok(userService.update(user, user));
+        return ResponseEntity.ok(new TokenDTO(user, null, null));
     }
 }

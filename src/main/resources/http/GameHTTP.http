@@ -2,10 +2,10 @@
 POST /api/user/game HTTP/1.1
 Host: localhost:8081
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyZDdmMzU4My05MDdkLTQ4ZDQtODRiMi1mYzU1ODcwOTYyYzAiLCJpc3MiOiJNeUFwcCIsImV4cCI6MTcwNDk4MDcyMCwiaWF0IjoxNzA0OTc4OTIwfQ.lQ4ngynm9GfQ6Q7brBvzgCChh7pbPSKEqhd1zCJOjiFd-MdwRIJZfu6iIWEgjIH_ExYXL7HkVXfpVIYOasKX0Q
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiZDU0ZmIzNS01YmVjLTQyYzMtOGY5ZS1lYjgyOGQyYjE0MzMiLCJpc3MiOiJNeUFwcCIsImV4cCI6MTcwNTA1ODA2MSwiaWF0IjoxNzA1MDU2MjYxfQ.waVwWmA7woTsy79BjjAkOBfmAaUYgaIkXzCBG-anHcl6JfpnfLN88R_yySferT7BDW7Ryhh12m1vNXSUjQ8hZg
 
 {
-  "owner": "2d7f3583-907d-48d4-84b2-fc55870962c0",
+  "owner": "bd54fb35-5bec-42c3-8f9e-eb828d2b1433",
   "enemy": "allan",
   "win": true,
   "xp": 20
