@@ -4,6 +4,7 @@ target/
 !**/src/test/**/target/
 
 .mvn/
+env.json
 
 ### STS ###
 .apt_generated
