@@ -4,6 +4,7 @@ target/
 !**/src/test/**/target/
 
 .mvn/
+database/
 env.json
 
 ### STS ###
