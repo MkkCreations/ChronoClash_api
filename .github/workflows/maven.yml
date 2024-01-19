@@ -28,6 +28,11 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: install docker compose
+      env: {
+        DATABASE_URL: ${{ secrets.DATABASE_URL }},
+        DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }},
+        DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }},
+      }
       run: |
         sudo apt-get remove docker docker-engine docker.io containerd runc
         sudo apt-get update
