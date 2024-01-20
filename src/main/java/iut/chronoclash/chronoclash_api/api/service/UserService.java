@@ -45,6 +45,7 @@ public class UserService implements UserDetailsService {
         user.setImage(newUser.getImage());
         user.setLevel(newUser.getLevel());
         user.setGames(newUser.getGames());
+        user.setLogs(newUser.getLogs());
 
         Operation operation = new Operation();
         operation.setType("update");
@@ -56,11 +57,15 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean isUsernameTaken(String username) {
-        return userRepository.findByUsername(username).isPresent();
+        return userRepository.existsByUsername(username);
     }
 
     public boolean isEmailTaken(String email) {
-        return userRepository.findByEmail(email).isPresent();
+        return userRepository.existsByEmail(email);
+    }
+
+    public boolean validatePassword(String password) {
+        return password.length() >= 8;
     }
 
     public User create(User user) {
