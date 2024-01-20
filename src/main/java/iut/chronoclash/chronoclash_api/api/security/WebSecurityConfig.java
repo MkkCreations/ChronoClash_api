@@ -47,6 +47,8 @@ public class WebSecurityConfig  {
                         .requestMatchers(HttpMethod.POST, "/auth/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/auth/me").authenticated()
                         .requestMatchers(HttpMethod.POST, "/user/game").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/auth/logout-all").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/*").authenticated()
                         .anyRequest().permitAll())
                 .addFilterBefore(accessTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exceptionHandling -> exceptionHandling

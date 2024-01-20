@@ -11,10 +11,17 @@ public class RefreshToken {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(unique = true)
     String id;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User owner;
+
+    @Column
+    private String requestIp;
+
+    @Column
+    private String requestUserAgent;
 
     public void setId(String id) {
         if (id != null)

@@ -20,9 +20,9 @@ public class LogService {
     public void createLog(String name, Operation operation, User owner) {
         Log log = new Log();
         log.setName(name);
-
-        if (logRepository.findByName(name).isPresent()) {
-            log = logRepository.findByName(name).get();
+        System.out.println(logRepository.findByOwnerAndName(owner, name));
+        if (logRepository.findByOwnerAndName(owner, name).isPresent()) {
+            log = logRepository.findByOwnerAndName(owner, name).get();
             List<Operation> operations = log.getOperations();
             operations.add(operation);
             log.setOperations(operations);

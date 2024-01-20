@@ -4,9 +4,11 @@ import iut.chronoclash.chronoclash_api.api.dto.GameDTO;
 import iut.chronoclash.chronoclash_api.api.dto.TokenDTO;
 import iut.chronoclash.chronoclash_api.api.model.Game;
 import iut.chronoclash.chronoclash_api.api.model.Operation;
+import iut.chronoclash.chronoclash_api.api.model.RefreshToken;
 import iut.chronoclash.chronoclash_api.api.model.User;
 import iut.chronoclash.chronoclash_api.api.service.GameService;
 import iut.chronoclash.chronoclash_api.api.service.LogService;
+import iut.chronoclash.chronoclash_api.api.service.RefreshTokenService;
 import iut.chronoclash.chronoclash_api.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,8 @@ import java.util.Date;
 public class UserREST {
     @Autowired
     UserService userService;
+    @Autowired
+    RefreshTokenService refreshTokenService;
     @Autowired
     GameService gameService;
     @Autowired
@@ -44,5 +48,10 @@ public class UserREST {
         operation.setDate(new Date().toString());
         logService.createLog("Game", operation, user);
         return ResponseEntity.ok(new TokenDTO(user, null, null));
+    }
+
+    @GetMapping("/connections")
+    public ResponseEntity<?> getConnections(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(refreshTokenService.getByOwner(user));
     }
 }

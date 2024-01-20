@@ -1,0 +1,14 @@
+
+### Logout
+POST /api/auth/logout HTTP/1.1
+Host: localhost:8081
+Content-Type: application/json
+
+{
+  "refreshToken" : "<token>"
+}
+
+### Logout All
+POST /api/auth/logout-all HTTP/1.1
+Host: localhost:8081
+Authorization: Bearer <token>
