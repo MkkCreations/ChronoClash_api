@@ -1,4 +1,9 @@
 
-GET /api/user/connections HTTP/1.1
+GET /api/network/connections HTTP/1.1
 Host: localhost:8081
-Authorization: Bearer <token>
+Authorization: Bearer
+
+###
+DELETE /api/network/disconnect/8aa1e71e-2e8e-45ea-b632-6dfb1c829bd0 HTTP/1.1
+Host: localhost:8081
+Authorization: Bearer

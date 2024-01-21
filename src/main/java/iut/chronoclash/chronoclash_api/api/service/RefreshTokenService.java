@@ -6,6 +6,7 @@ import iut.chronoclash.chronoclash_api.api.repository.RefreshTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -26,6 +27,7 @@ public class RefreshTokenService {
         refreshToken.setOwner(owner);
         refreshToken.setRequestIp(requestIp);
         refreshToken.setRequestUserAgent(requestUserAgent);
+        refreshToken.setDate(new Date());
         refreshTokenRepository.save(refreshToken);
         return refreshToken;
     }

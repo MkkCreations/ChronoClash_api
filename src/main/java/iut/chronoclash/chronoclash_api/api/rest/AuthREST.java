@@ -5,7 +5,6 @@ import iut.chronoclash.chronoclash_api.api.jwt.JwtHelper;
 import iut.chronoclash.chronoclash_api.api.model.Operation;
 import iut.chronoclash.chronoclash_api.api.model.RefreshToken;
 import iut.chronoclash.chronoclash_api.api.model.User;
-import iut.chronoclash.chronoclash_api.api.repository.RefreshTokenRepository;
 import iut.chronoclash.chronoclash_api.api.repository.UserRepository;
 import iut.chronoclash.chronoclash_api.api.service.LogService;
 import iut.chronoclash.chronoclash_api.api.service.RefreshTokenService;
@@ -25,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -49,7 +47,12 @@ public class AuthREST {
     @PostMapping("/login")
     @Transactional
     public ResponseEntity<?> login(@RequestBody LoginDTO dto, HttpServletRequest request) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
+        Authentication authentication;
+        try {
+            authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.badRequest().body(new ErrorResponseDTO("invalid credentials"));
+        }
         SecurityContextHolder.getContext().setAuthentication(authentication);
         User user = (User) authentication.getPrincipal();
         RefreshToken refreshToken = new RefreshToken();
@@ -62,7 +65,7 @@ public class AuthREST {
         // Creation of the Log
         Operation operation = new Operation();
         operation.setType("Login");
-        operation.setDate(new Date().toString());
+        operation.setDate(new Date());
         operation.setDescription(String.format("User %s logged in", user.getUsername()));
         logService.createLog("Auth", operation, user);
 
@@ -74,11 +77,11 @@ public class AuthREST {
     public ResponseEntity<?> signup(@Valid @RequestBody SignupDTO dto, HttpServletRequest request) {
         // Check if username or email is taken, and if password is valid
         if (userService.isUsernameTaken(dto.getUsername())) {
-            return ResponseEntity.badRequest().body("username already exists");
+            return ResponseEntity.badRequest().body(new ErrorResponseDTO("username already exists"));
         } else if (userService.isEmailTaken(dto.getEmail())) {
-            return ResponseEntity.badRequest().body("email already exists");
+            return ResponseEntity.badRequest().body(new ErrorResponseDTO("email already exists"));
         } else if (!userService.validatePassword(dto.getPassword())) {
-            return ResponseEntity.badRequest().body("passwords must be at least 8 characters long");
+            return ResponseEntity.badRequest().body(new ErrorResponseDTO("passwords must be at least 8 characters long"));
         }
 
         // Creation of the User
@@ -88,7 +91,7 @@ public class AuthREST {
         // Creation of the Log
         Operation operation = new Operation();
         operation.setType("Signup");
-        operation.setDate(new Date().toString());
+        operation.setDate(new Date());
         operation.setDescription(String.format("User %s signed up", user.getUsername()));
         logService.createLog("Auth", operation, user);
 
@@ -115,7 +118,7 @@ public class AuthREST {
             // Creation of the Log
             Operation operation = new Operation();
             operation.setType("Logout");
-            operation.setDate(new Date().toString());
+            operation.setDate(new Date());
             operation.setDescription(String.format("User %s logged out", user.getUsername()));
             logService.createLog("Auth", operation, user);
 
@@ -133,7 +136,7 @@ public class AuthREST {
         // Creation of the Log
         Operation operation = new Operation();
         operation.setType("Logout");
-        operation.setDate(new Date().toString());
+        operation.setDate(new Date());
         operation.setDescription(String.format("User %s logged out from all devices", user.getUsername()));
         logService.createLog("Auth", operation, user);
 
@@ -164,7 +167,7 @@ public class AuthREST {
             // Creation of the Log
             Operation operation = new Operation();
             operation.setType("Login");
-            operation.setDate(new Date().toString());
+            operation.setDate(new Date());
             operation.setDescription(String.format("User %s logged", user.getUsername()));
             logService.createLog("Auth", operation, user);
 
@@ -173,22 +176,19 @@ public class AuthREST {
         throw new BadCredentialsException(invalidToken);
     }
 
-    @PutMapping("/change-password/{id}")
-    public ResponseEntity<?> changePassword(@AuthenticationPrincipal User user, @RequestBody ChangePassDTO dto, @PathVariable String id ) {
-        if (!user.getId().equals(id)) {
-            return ResponseEntity.badRequest().body("invalid user");
-        } else if (!passwordEncoder.matches(dto.getActualPassword(), user.getPassword())) {
-            return ResponseEntity.badRequest().body("invalid password");
+    @PutMapping("/change-password")
+    public ResponseEntity<?> changePassword(@AuthenticationPrincipal User user, @RequestBody ChangePassDTO dto) {
+        if (!passwordEncoder.matches(dto.getActualPassword(), user.getPassword())) {
+            return ResponseEntity.badRequest().body(new ErrorResponseDTO("invalid password"));
         } else if (!dto.getNewPassword().equals(dto.getConfirmPassword())) {
-            return ResponseEntity.badRequest().body("passwords do not match");
+            return ResponseEntity.badRequest().body(new ErrorResponseDTO("passwords do not match"));
         } else {
-            user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
-            userRepository.save(user);
+            userService.changePassword(user, passwordEncoder.encode(dto.getNewPassword()));
 
             // Creation of the Log
             Operation operation = new Operation();
             operation.setType("Update");
-            operation.setDate(new Date().toString());
+            operation.setDate(new Date());
             operation.setDescription(String.format("User %s changed password", user.getUsername()));
             logService.createLog("User", operation, user);
 

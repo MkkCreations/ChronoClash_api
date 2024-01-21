@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Date;
+
 @Entity
 @Data
 public class RefreshToken {
@@ -22,6 +24,9 @@ public class RefreshToken {
 
     @Column
     private String requestUserAgent;
+
+    @Column
+    private Date date;
 
     public void setId(String id) {
         if (id != null)
