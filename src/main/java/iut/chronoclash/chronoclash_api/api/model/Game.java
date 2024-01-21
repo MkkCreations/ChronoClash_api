@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "games")
 @Getter
@@ -26,14 +28,18 @@ public class Game {
     @Column
     private int win;
 
+    @Column
+    private Date date;
+
     public Game() {
     }
 
-    public Game(String id, User owner, String enemy, int win) {
+    public Game(String id, User owner, String enemy, int win, Date date) {
         this.id = id;
         this.owner = owner;
         this.enemy = enemy;
         this.win = win;
+        this.date = date;
     }
 
     public int isWin() {

@@ -2,9 +2,15 @@ package iut.chronoclash.chronoclash_api.api.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.Date;
 
 @Entity
 @Table(name = "operations")
+@Getter
+@Setter
 public class Operation {
     @Id
     @Column(unique = true)
@@ -12,13 +18,13 @@ public class Operation {
     private String id;
     private String type;
     private String description;
-    private String date;
+    private Date date;
     @ManyToOne
     @JoinColumn(name = "log_id")
     @JsonBackReference
     private Log log;
 
-    public Operation(String id, String type, String description, String date, Log log) {
+    public Operation(String id, String type, String description, Date date, Log log) {
         this.id = id;
         this.type = type;
         this.description = description;
@@ -30,49 +36,13 @@ public class Operation {
 
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getType() { return type; }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public Log getLog() {
-        return log;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setLog(Log log) {
-        this.log = log;
-    }
-
-    public void setType(String type) { this.type = type; }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
     @Override
     public String toString() {
         return "Operation{" +
                 "id='" + id + '\'' +
                 ", type='" + type + '\'' +
                 ", description='" + description + '\'' +
-                ", date='" + date + '\'' +
+                ", date='" + date.toString() + '\'' +
                 ", log=" + log +
                 '}';
     }

@@ -45,11 +45,7 @@ public class WebSecurityConfig  {
         return http
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         .requestMatchers(HttpMethod.POST, "/auth/*").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/auth/me").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/user/game").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/auth/logout-all").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "/*").authenticated()
-                        .anyRequest().permitAll())
+                        .anyRequest().authenticated())
                 .addFilterBefore(accessTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(accessTokenEntryPoint))

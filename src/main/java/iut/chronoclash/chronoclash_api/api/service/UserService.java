@@ -49,10 +49,15 @@ public class UserService implements UserDetailsService {
 
         Operation operation = new Operation();
         operation.setType("update");
-        operation.setDate(new Date().toString());
+        operation.setDate(new Date());
         operation.setDescription(String.format("User %s updated info", user.getUsername()));
 
         logService.createLog("User", operation, user);
+        return userRepository.save(user);
+    }
+
+    public User changePassword(User user, String newPwd) {
+        user.setPassword(newPwd);
         return userRepository.save(user);
     }
 
@@ -85,6 +90,6 @@ public class UserService implements UserDetailsService {
             level.setLevel(level.getLevel() + 1);
         }
         user.setLevel(level);
-        return user;
+        return userRepository.save(user);
     }
 }

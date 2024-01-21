@@ -158,3 +158,6 @@ The server is a REST API that allows users to create accounts, login, and play t
   "refreshToken": "..."
 }
 ```
+
+### v1.0.0
+This is the first version of the API. It is deployed on Railway and can be accessed at `https://chronoclashapi-production.up.railway.app/`
