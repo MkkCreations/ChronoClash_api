@@ -12,13 +12,12 @@ class UserTests {
 
     @Test
     void testUserConstructor() {
-        User user = new User("name", "username", "email", "password", "image", "role", null, null, null);
-
+        User user = new User("name", "username", "email", "password", new byte[]{}, "role", null, null, null);
         assertEquals("name", user.getName());
         assertEquals("username", user.getUsername());
         assertEquals("email", user.getEmail());
         assertEquals("password", user.getPassword());
-        assertEquals("image", user.getImage());
+        assertSame(new byte[]{}, user.getImage());
         assertEquals("role", user.getRole());
         assertNull(user.getLogs());
     }
@@ -31,7 +30,7 @@ class UserTests {
         user.setUsername("username");
         user.setEmail("email");
         user.setPassword("password");
-        user.setImage("image");
+        user.setImage(new byte[]{});
         user.setRole("role");
         user.setLogs(null);
 
@@ -39,14 +38,14 @@ class UserTests {
         assertEquals("username", user.getUsername());
         assertEquals("email", user.getEmail());
         assertEquals("password", user.getPassword());
-        assertEquals("image", user.getImage());
+        assertSame(new byte[]{}, user.getImage());
         assertEquals("role", user.getRole());
         assertNull(user.getLogs());
     }
 
     @Test
     void testUserAuthorities() {
-        User user = new User("name", "username", "email", "password", "image", null, null, null, null);
+        User user = new User("name", "username", "email", "password", new byte[]{}, null, null, null, null);
 
         assertEquals(1, user.getAuthorities().size());
         assertTrue(user.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_USER")));

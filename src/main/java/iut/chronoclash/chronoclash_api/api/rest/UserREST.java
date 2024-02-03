@@ -41,6 +41,9 @@ public class UserREST {
 
     @PutMapping("/me")
     public ResponseEntity<?> update(@AuthenticationPrincipal User user, @RequestBody User newUser) {
+        if (newUser.getImage() != null && newUser.getImage().length >= 1000000) {
+            return ResponseEntity.badRequest().body("Image too large");
+        }
         return ResponseEntity.ok(userService.update(user, newUser));
     }
 
@@ -57,5 +60,10 @@ public class UserREST {
         operation.setDate(new Date());
         logService.createLog("Game", operation, updatedUser);
         return ResponseEntity.ok(updatedUser);
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<?> getUsers(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(Map.of("users", userService.findAll()));
     }
 }

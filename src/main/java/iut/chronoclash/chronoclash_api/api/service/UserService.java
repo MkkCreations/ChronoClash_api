@@ -1,13 +1,12 @@
 package iut.chronoclash.chronoclash_api.api.service;
 
-import iut.chronoclash.chronoclash_api.api.model.Game;
+import iut.chronoclash.chronoclash_api.api.dto.UsersDTO;
 import iut.chronoclash.chronoclash_api.api.model.Level;
 import iut.chronoclash.chronoclash_api.api.model.Operation;
 import iut.chronoclash.chronoclash_api.api.model.User;
 import iut.chronoclash.chronoclash_api.api.repository.GameRepository;
 import iut.chronoclash.chronoclash_api.api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -34,9 +33,13 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("user id not found"));
     }
 
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("username not found"));
+    public List<UsersDTO> findAll() {
+        List<User> users = userRepository.findAll();
+        List<UsersDTO> usersDTO = new ArrayList<>();
+        for (User user : users) {
+            usersDTO.add(new UsersDTO(user.getId(), user.getUsername(), user.getName(), user.getEmail(), user.getImage(), user.getLevel().getLevel()));
+        }
+        return usersDTO;
     }
 
     public User update(User user, User newUser) {
@@ -56,9 +59,9 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
-    public User changePassword(User user, String newPwd) {
+    public void changePassword(User user, String newPwd) {
         user.setPassword(newPwd);
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
     public boolean isUsernameTaken(String username) {

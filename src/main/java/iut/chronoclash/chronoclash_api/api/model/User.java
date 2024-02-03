@@ -45,8 +45,10 @@ public class User implements UserDetails {
     private String password;
 
     @Nullable
-    @Column
-    private String image;
+    @Column(columnDefinition="BLOB")
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    private byte[] image;
 
     @Nullable
     @Column
@@ -78,7 +80,7 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String name, String username, String email, String password, String image, String role, List<Log> logs, Level level, List<Game> games) {
+    public User(String name, String username, String email, String password, byte[] image, String role, List<Log> logs, Level level, List<Game> games) {
         this.name = name;
         this.username = username;
         this.email = email;

@@ -93,6 +93,6 @@ public class JwtHelper {
     }
 
     public String getTokenIdFromRefreshToken(String token) {
-        return decodeRefreshToken(token).get().getClaim("tokenId").asString();
+        return decodeRefreshToken(token).get().getId();
     }
 }
