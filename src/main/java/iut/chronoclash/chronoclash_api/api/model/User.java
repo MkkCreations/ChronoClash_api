@@ -77,10 +77,15 @@ public class User implements UserDetails {
     @Fetch(FetchMode.JOIN)
     private List<Game> games;
 
-    public User() {
-    }
+    @Nullable
+    @JsonManagedReference
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Fetch(FetchMode.JOIN)
+    private List<Friend> friends;
 
-    public User(String name, String username, String email, String password, byte[] image, String role, List<Log> logs, Level level, List<Game> games) {
+    public User() {}
+
+    public User(String name, String username, String email, String password, byte[] image, String role, List<Log> logs, Level level, List<Game> games, List<Friend> friends) {
         this.name = name;
         this.username = username;
         this.email = email;
@@ -90,6 +95,7 @@ public class User implements UserDetails {
         this.logs = logs;
         this.level = level;
         this.games = games;
+        this.friends = friends;
     }
 
     @Override

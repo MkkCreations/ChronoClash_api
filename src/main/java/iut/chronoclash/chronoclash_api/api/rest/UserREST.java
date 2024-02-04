@@ -1,26 +1,22 @@
 package iut.chronoclash.chronoclash_api.api.rest;
 
+import iut.chronoclash.chronoclash_api.api.dto.ErrorResponseDTO;
 import iut.chronoclash.chronoclash_api.api.dto.GameDTO;
 import iut.chronoclash.chronoclash_api.api.dto.TokenDTO;
+import iut.chronoclash.chronoclash_api.api.dto.UsersDTO;
 import iut.chronoclash.chronoclash_api.api.jwt.JwtHelper;
 import iut.chronoclash.chronoclash_api.api.model.Game;
 import iut.chronoclash.chronoclash_api.api.model.Operation;
 import iut.chronoclash.chronoclash_api.api.model.RefreshToken;
 import iut.chronoclash.chronoclash_api.api.model.User;
-import iut.chronoclash.chronoclash_api.api.service.GameService;
-import iut.chronoclash.chronoclash_api.api.service.LogService;
-import iut.chronoclash.chronoclash_api.api.service.RefreshTokenService;
-import iut.chronoclash.chronoclash_api.api.service.UserService;
+import iut.chronoclash.chronoclash_api.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/user")
@@ -33,6 +29,8 @@ public class UserREST {
     GameService gameService;
     @Autowired
     LogService logService;
+    @Autowired
+    FriendService friendService;
 
     @GetMapping("/me")
     public ResponseEntity<?> me(@AuthenticationPrincipal User user) {
@@ -42,7 +40,7 @@ public class UserREST {
     @PutMapping("/me")
     public ResponseEntity<?> update(@AuthenticationPrincipal User user, @RequestBody User newUser) {
         if (newUser.getImage() != null && newUser.getImage().length >= 1000000) {
-            return ResponseEntity.badRequest().body("Image too large");
+            return ResponseEntity.badRequest().body(new ErrorResponseDTO("Image size too large"));
         }
         return ResponseEntity.ok(userService.update(user, newUser));
     }
@@ -64,6 +62,11 @@ public class UserREST {
 
     @GetMapping("/users")
     public ResponseEntity<?> getUsers(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(Map.of("users", userService.findAll()));
+        List<UsersDTO> users = userService.findAll().stream()
+                .filter(u ->
+                        !u.getId().equals(user.getId()) && friendService.getAllByUser(user).stream().noneMatch(f -> f.getFriend().getId().equals(u.getId())))
+                .toList();
+
+        return ResponseEntity.ok(Map.of("users", users));
     }
 }

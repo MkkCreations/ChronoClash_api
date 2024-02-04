@@ -12,7 +12,7 @@ class UserTests {
 
     @Test
     void testUserConstructor() {
-        User user = new User("name", "username", "email", "password", new byte[]{}, "role", null, null, null);
+        User user = new User("name", "username", "email", "password", new byte[]{}, "role", null, null, null, null);
         assertEquals("name", user.getName());
         assertEquals("username", user.getUsername());
         assertEquals("email", user.getEmail());
@@ -45,7 +45,7 @@ class UserTests {
 
     @Test
     void testUserAuthorities() {
-        User user = new User("name", "username", "email", "password", new byte[]{}, null, null, null, null);
+        User user = new User("name", "username", "email", "password", new byte[]{}, null, null, null, null, null);
 
         assertEquals(1, user.getAuthorities().size());
         assertTrue(user.getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_USER")));
