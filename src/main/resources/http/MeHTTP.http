@@ -1,4 +1,4 @@
 
 GET /api/user/me HTTP/1.1
 Host: localhost:8081
-Authorization: Bearer
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkNTk2ZTAxOC0zOWI1LTQ1MWYtYTFkZi0wM2EwNDc5ZDU3MDciLCJpc3MiOiJNeUFwcCIsImV4cCI6MTcwNjk5NDAxNywiaWF0IjoxNzA2OTkyMjE3fQ.nWE1gC4trt6xrYJVfhue1Fc2cCk260YK429rk6BaV8bEIzCeD9k1r60cnISC6mHPwxmY3CCIJfhTgES6fp4e9Q
