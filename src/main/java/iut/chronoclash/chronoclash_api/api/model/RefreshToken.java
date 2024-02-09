@@ -2,6 +2,7 @@ package iut.chronoclash.chronoclash_api.api.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.Date;
@@ -12,6 +13,7 @@ public class RefreshToken {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(unique = true)
+    @NotNull
     String id;
 
     @ManyToOne

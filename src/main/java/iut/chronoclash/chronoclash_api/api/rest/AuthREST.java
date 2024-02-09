@@ -123,7 +123,7 @@ public class AuthREST {
 
             return ResponseEntity.ok().build();
         }
-        throw new BadCredentialsException(invalidToken);
+        return ResponseEntity.badRequest().body(new ErrorResponseDTO(invalidToken));
     }
 
     @PostMapping("/logout-all")

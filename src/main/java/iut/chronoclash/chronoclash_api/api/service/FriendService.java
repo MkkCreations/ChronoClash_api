@@ -5,6 +5,7 @@ import iut.chronoclash.chronoclash_api.api.model.Friend;
 import iut.chronoclash.chronoclash_api.api.model.User;
 import iut.chronoclash.chronoclash_api.api.repository.FriendRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -26,6 +27,17 @@ public class FriendService {
     }
 
     public Friend addFriend(String userId, String friendId) {
+        if (friendRepository.existsByOwnerAndFriend(userService.findById(userId), userService.findById(friendId))) {
+            throw new IllegalArgumentException("Friend request already exists");
+        }
+        if (userId.equals(friendId)) throw new IllegalArgumentException("You can't add yourself as a friend");
+        // "You are already friends"
+        if (friendRepository.findFriendsByOwner(userService.findById(userId)).stream().anyMatch(f -> f.getFriend().getId().equals(userService.findById(friendId)))) throw new IllegalArgumentException("You are already friends");
+        // "You are blocked by this user"
+        if (friendRepository.findFriendsByOwner(userService.findById(userId)).stream().anyMatch(f -> f.getFriend().getId().equals(userService.findById(friendId)) && f.isBlocked())) throw new IllegalArgumentException("You are blocked by this user");
+        // "You already sent a friend request"
+        if (friendRepository.findFriendsByOwner(userService.findById(userId)).stream().anyMatch(f -> f.getFriend().getId().equals(userService.findById(friendId)) && !f.isAccepted())) throw new IllegalArgumentException("You already sent a friend request");
+
         User user = userService.findById(userId);
         User friend = userService.findById(friendId);
         Friend newFriend = new Friend(user, friend, false, false, new Date());
@@ -47,6 +59,9 @@ public class FriendService {
     public void acceptFriend(String requestId) {
         Friend friend = friendRepository.findById(requestId).orElseThrow();
         friend.setAccepted(true);
+        if (friendRepository.existsByOwnerAndFriend(friend.getFriend(), friend.getOwner())) {
+            throw new IllegalArgumentException("This friend request has already been accepted");
+        }
         Friend newFriend = addFriend(friend.getFriend().getId(), friend.getOwner().getId());
         newFriend.setAccepted(true);
         friendRepository.save(newFriend);

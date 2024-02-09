@@ -43,10 +43,6 @@ public class FriendREST {
     @PostMapping ("/add")
     @Transactional
     public ResponseEntity<?> add(@AuthenticationPrincipal User user, @RequestBody AddFriendDTO dto) {
-        if (user.getId().equals(dto.getId())) return ResponseEntity.badRequest().body("You can't add yourself as a friend");
-        if (friendService.getAllByUser(user).stream().anyMatch(f -> f.getFriend().getId().equals(dto.getId()))) return ResponseEntity.badRequest().body("You are already friends");
-        if (friendService.getAllByUser(user).stream().anyMatch(f -> f.getFriend().getId().equals(dto.getId()) && f.isBlocked())) return ResponseEntity.badRequest().body("You are blocked by this user");
-        if (friendService.getAllByUser(user).stream().anyMatch(f -> f.getFriend().getId().equals(dto.getId()) && !f.isAccepted())) return ResponseEntity.badRequest().body("You already sent a friend request");
         try {
             Friend friend = friendService.addFriend(user.getId(), dto.getId());
 

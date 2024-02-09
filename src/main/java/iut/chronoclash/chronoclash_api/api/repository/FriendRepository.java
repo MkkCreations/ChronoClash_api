@@ -10,7 +10,9 @@ import java.util.List;
 @Repository
 public interface FriendRepository extends JpaRepository<Friend, String> {
     List<Friend> findFriendsByOwner(User user);
+    Friend findFriendsByOwnerAndFriend(User owner, User friend);
     List<Friend> findFriendsByFriendAndAcceptedAndBlocked(User user, boolean accepted, boolean blocked);
+    boolean existsByOwnerAndFriend(User user, User friend);
     void deleteByFriendId(String id);
     void deleteAllByOwner(User user);
 }
