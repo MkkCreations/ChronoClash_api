@@ -5,9 +5,9 @@ import iut.chronoclash.chronoclash_api.api.model.Friend;
 import iut.chronoclash.chronoclash_api.api.model.User;
 import iut.chronoclash.chronoclash_api.api.repository.FriendRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +19,7 @@ public class FriendService {
     UserService userService;
 
     public List<Friend> getAllByUser(User user) {
+        if (friendRepository.findFriendsByOwner(user).isEmpty()) return new ArrayList<>();
         return friendRepository.findFriendsByOwner(user).stream().filter(f -> !f.isBlocked() && f.isAccepted()).toList();
     }
 
@@ -27,19 +28,19 @@ public class FriendService {
     }
 
     public Friend addFriend(String userId, String friendId) {
-        if (friendRepository.existsByOwnerAndFriend(userService.findById(userId), userService.findById(friendId))) {
+        if (friendRepository.existsByOwnerAndFriend(userService.getById(userId), userService.getById(friendId))) {
             throw new IllegalArgumentException("Friend request already exists");
         }
         if (userId.equals(friendId)) throw new IllegalArgumentException("You can't add yourself as a friend");
         // "You are already friends"
-        if (friendRepository.findFriendsByOwner(userService.findById(userId)).stream().anyMatch(f -> f.getFriend().getId().equals(userService.findById(friendId)))) throw new IllegalArgumentException("You are already friends");
+        if (friendRepository.findFriendsByOwner(userService.getById(userId)).stream().anyMatch(f -> f.getFriend().getId().equals(userService.getById(friendId)))) throw new IllegalArgumentException("You are already friends");
         // "You are blocked by this user"
-        if (friendRepository.findFriendsByOwner(userService.findById(userId)).stream().anyMatch(f -> f.getFriend().getId().equals(userService.findById(friendId)) && f.isBlocked())) throw new IllegalArgumentException("You are blocked by this user");
+        if (friendRepository.findFriendsByOwner(userService.getById(userId)).stream().anyMatch(f -> f.getFriend().getId().equals(userService.getById(friendId)) && f.isBlocked())) throw new IllegalArgumentException("You are blocked by this user");
         // "You already sent a friend request"
-        if (friendRepository.findFriendsByOwner(userService.findById(userId)).stream().anyMatch(f -> f.getFriend().getId().equals(userService.findById(friendId)) && !f.isAccepted())) throw new IllegalArgumentException("You already sent a friend request");
+        if (friendRepository.findFriendsByOwner(userService.getById(userId)).stream().anyMatch(f -> f.getFriend().getId().equals(userService.getById(friendId)) && !f.isAccepted())) throw new IllegalArgumentException("You already sent a friend request");
 
-        User user = userService.findById(userId);
-        User friend = userService.findById(friendId);
+        User user = userService.getById(userId);
+        User friend = userService.getById(friendId);
         Friend newFriend = new Friend(user, friend, false, false, new Date());
         return friendRepository.save(newFriend);
     }
@@ -87,6 +88,6 @@ public class FriendService {
     }
 
     public void deleteByUser(String userId) {
-        friendRepository.deleteAllByOwner(userService.findById(userId));
+        friendRepository.deleteAllByOwner(userService.getById(userId));
     }
 }
