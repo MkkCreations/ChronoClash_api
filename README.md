@@ -2,17 +2,35 @@
 # CHRONOCLASH SERVER
 
 ## Description
-This is the server for the Chronoclash game. It is a simple REST API that allows users to create accounts, login, and play the game.
+This is the server for the ChronoClash game. It is a simple REST API that allows users to create accounts, login, and play the game.
 
 ## Installation
 1. Clone the repository
 2. Add `DATABASE_URL` environment variable to your system with the value `jdbc:mysql://127.0.0.1:3308/chronoclash_db`
 3. Add `DATABASE_USERNAME` environment variable to your system with the value `root`
 4. Add `DATABASE_PASSWORD` environment variable to your system with the value `password`
-5. Run `docker compose up -d database` to start the database
-6. Run the project in your IDE
-7. The server will be running on port `8081`
-8. The database will be running on port `3308`
+5. Add `REDIS_HOST` environment variable to your system with the value `localhost`
+6. Add `REDIS_PORT` environment variable to your system with the value `6379`
+7. Run `docker compose up -d` to start the database and the Redis server
+8. Run the project in your IDE
+9. The server will be running on port `8081`
+10. The database will be running on port `3308`
+11. The Redis server will be running on port `6379`
+
+> ### .end.json example
+> ```json
+> {
+>   "DATABASE_URL":"jdbc:mysql://127.0.0.1:3308/chronoclash_db",
+>   "DATABASE_USERNAME":"root",
+>   "DATABASE_PASSWORD":"password",
+>   "REDIS_HOST":"localhost",
+>   "REDIS_PORT":"6379",
+>   "SECURITY_USER": "chronoclash",
+>   "SECURITY_PASSWORD": "chronoclash"
+> }
+> ```
+
+
 
 ## Usage
 The server is a REST API that allows users to create accounts, login, and play the game. The API is deployed on Railway and can be accessed at `https://chronoclashapi-production.up.railway.app/`
@@ -28,14 +46,31 @@ The server is a REST API that allows users to create accounts, login, and play t
 - BCrypt
 - Hibernate
 - Lombok
+- Redis
+- Cache
 - MySQL
 - Docker
 - Git
 - Railway
 
+## Cache
+The server uses Redis to cache the user's data. The cache is used to store the list of users. The cache is used to reduce the number of database calls and to improve the performance of the server.
+
+> ### Performance
+> The performance of the server has been improved by using Redis cache. The performance of the server has been improved by `2122%` by using Redis cache.
+>> #### Database Request: `191 ms`
+>> #### Cache Request: `9 ms`
+
+
+## Database
+The server uses MySQL to store the user's data. The database is used to store the user's information, the user's games, and the user's logs. The database is used to store the user's friends and the user's connections.
+
+## Security
+The server uses JWT to authenticate users. The server uses Spring Security to secure the endpoints. The server uses BCrypt to hash the user's password.
+
 ## Routes
 ### Auth
-- Register: `POST /api/auth/register`
+- Signup: `POST /api/auth/signup`
 - Login: `POST /api/auth/login`
 - Refresh Token: `POST /api/auth/refresh`
 - Logout: `POST /api/auth/logout` Authenticated
@@ -45,11 +80,26 @@ The server is a REST API that allows users to create accounts, login, and play t
 ### User
 - Get User info: `GET /api/user/me` Authenticated
 - Add game: `POST /api/user/game` Authenticated
+- Get All Users: `GET /api/user/users` Authenticated
+
+### Friend
+- Add Friend: `POST /api/friend/add` Authenticated
+- Accept Friend: `POST /api/friend/accept/{id}` Authenticated
+- Get Friends: `GET /api/friend/all` Authenticated
+- Friends Notifications: `GET /api/friend/notifications` Authenticated
+
+### Connections
+- Get All Connections: `GET /api/network/connections` Authenticated
+- Delete Connection: `DELETE /api/network/disconnect/{id}` Authenticated
+
 
 ## API
 ### Authentication
-#### Register
-`POST /api/auth/register`
+
+<details>
+  <summary>Signup</summary>
+
+`POST /api/auth/signup`
 ##### Request
 ```json
 {
@@ -86,7 +136,11 @@ The server is a REST API that allows users to create accounts, login, and play t
     "accountNonExpired": true
 }
 ```
-#### Login
+</details>
+
+<details>
+  <summary>Login</summary>
+
 `POST /api/auth/login`
 ##### Request
 ```json
@@ -158,6 +212,7 @@ The server is a REST API that allows users to create accounts, login, and play t
   "refreshToken": "..."
 }
 ```
+</details>
 
-### v1.0.0
+### v2.0.0
 This is the first version of the API. It is deployed on Railway and can be accessed at `https://chronoclashapi-production.up.railway.app/`

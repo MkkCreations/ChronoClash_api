@@ -147,7 +147,7 @@ public class AuthREST {
         String refreshTokenString = dto.getRefreshToken();
         if (jwtHelper.validateRefreshToken(refreshTokenString) && refreshTokenService.existsById(jwtHelper.getTokenIdFromRefreshToken(refreshTokenString))) {
             // valid and exists in db
-            User user = userService.findById(jwtHelper.getUserIdFromRefreshToken(refreshTokenString));
+            User user = userService.getById(jwtHelper.getUserIdFromRefreshToken(refreshTokenString));
             String accessToken = jwtHelper.generateAccessToken(user);
             return ResponseEntity.ok(new TokenDTO(user, accessToken, refreshTokenString));
         }
@@ -161,7 +161,7 @@ public class AuthREST {
             // valid and exists in db
             refreshTokenService.deleteById(jwtHelper.getTokenIdFromRefreshToken(refreshTokenString));
 
-            User user = userService.findById(jwtHelper.getUserIdFromRefreshToken(refreshTokenString));
+            User user = userService.getById(jwtHelper.getUserIdFromRefreshToken(refreshTokenString));
 
             // Creation of the Log
             Operation operation = new Operation();

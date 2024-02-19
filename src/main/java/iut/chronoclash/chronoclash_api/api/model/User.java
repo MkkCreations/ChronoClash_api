@@ -81,7 +81,7 @@ public class User implements UserDetails {
     @JsonManagedReference
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     @Fetch(FetchMode.JOIN)
-    private List<Friend> friends;
+    private List<Friend> friends = new ArrayList<>();
 
     public User() {}
 

@@ -64,7 +64,7 @@ public class JwtHelper {
         try {
             return Optional.of(accessTokenVerifier.verify(token));
         } catch (JWTVerificationException e) {
-            throw new RuntimeException("invalid access token", e);
+            throw new RuntimeException("invalid access token");
         }
     }
 
@@ -72,7 +72,7 @@ public class JwtHelper {
         try {
             return Optional.of(refreshTokenVerifier.verify(token));
         } catch (JWTVerificationException e) {
-            throw new RuntimeException("invalid refresh token", e);
+            throw new RuntimeException("invalid refresh token");
         }
     }
 

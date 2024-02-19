@@ -2,12 +2,8 @@ package iut.chronoclash.chronoclash_api.api.rest;
 
 import iut.chronoclash.chronoclash_api.api.dto.ErrorResponseDTO;
 import iut.chronoclash.chronoclash_api.api.dto.GameDTO;
-import iut.chronoclash.chronoclash_api.api.dto.TokenDTO;
 import iut.chronoclash.chronoclash_api.api.dto.UsersDTO;
-import iut.chronoclash.chronoclash_api.api.jwt.JwtHelper;
-import iut.chronoclash.chronoclash_api.api.model.Game;
 import iut.chronoclash.chronoclash_api.api.model.Operation;
-import iut.chronoclash.chronoclash_api.api.model.RefreshToken;
 import iut.chronoclash.chronoclash_api.api.model.User;
 import iut.chronoclash.chronoclash_api.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,11 +58,11 @@ public class UserREST {
 
     @GetMapping("/users")
     public ResponseEntity<?> getUsers(@AuthenticationPrincipal User user) {
-        List<UsersDTO> users = userService.findAll().stream()
-                .filter(u ->
-                        !u.getId().equals(user.getId()) && friendService.getAllByUser(user).stream().noneMatch(f -> f.getFriend().getId().equals(u.getId())))
-                .toList();
-
+        List<UsersDTO> users = userService.getAll().stream()
+                    .filter(u ->
+                            !u.getId().equals(user.getId())
+                            && (friendService.getAllByUser(user).isEmpty() || friendService.getAllByUser(user).stream().noneMatch(f -> f.getFriend().getId().equals(u.getId()))))
+                    .toList();
         return ResponseEntity.ok(Map.of("users", users));
     }
 }

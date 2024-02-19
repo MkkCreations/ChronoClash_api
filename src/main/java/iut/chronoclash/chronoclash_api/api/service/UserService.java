@@ -1,12 +1,16 @@
 package iut.chronoclash.chronoclash_api.api.service;
 
 import iut.chronoclash.chronoclash_api.api.dto.UsersDTO;
+import iut.chronoclash.chronoclash_api.api.model.CacheNames;
 import iut.chronoclash.chronoclash_api.api.model.Level;
 import iut.chronoclash.chronoclash_api.api.model.Operation;
 import iut.chronoclash.chronoclash_api.api.model.User;
-import iut.chronoclash.chronoclash_api.api.repository.GameRepository;
 import iut.chronoclash.chronoclash_api.api.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -14,11 +18,10 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
+@AllArgsConstructor
 public class UserService implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
-    @Autowired
-    GameRepository gameRepository;
     @Autowired
     LogService logService;
 
@@ -28,12 +31,13 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("username not found"));
     }
 
-    public User findById(String id) {
+    public User getById(String id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("user id not found"));
     }
 
-    public List<UsersDTO> findAll() {
+    @Cacheable(CacheNames.USERS)
+    public List<UsersDTO> getAll() {
         List<User> users = userRepository.findAll();
         List<UsersDTO> usersDTO = new ArrayList<>();
         for (User user : users) {
@@ -76,6 +80,11 @@ public class UserService implements UserDetailsService {
         return password.length() >= 8;
     }
 
+    @Caching(
+            evict = {
+                    @CacheEvict(value = CacheNames.USERS, allEntries = true, condition = "#user.id != null")
+            }
+    )
     public User create(User user) {
         Level level = new Level();
         level.setOwner(user);
