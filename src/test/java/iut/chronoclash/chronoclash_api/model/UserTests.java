@@ -12,12 +12,13 @@ class UserTests {
 
     @Test
     void testUserConstructor() {
-        User user = new User("name", "username", "email", "password", new byte[]{}, "role", null, null, null, null);
+        byte[] img = new byte[]{};
+        User user = new User("name", "username", "email", "password", img, "role", null, null, null, null);
         assertEquals("name", user.getName());
         assertEquals("username", user.getUsername());
         assertEquals("email", user.getEmail());
         assertEquals("password", user.getPassword());
-        assertSame(new byte[]{}, user.getImage());
+        assertSame(img, user.getImage());
         assertEquals("role", user.getRole());
         assertNull(user.getLogs());
     }
@@ -30,7 +31,7 @@ class UserTests {
         user.setUsername("username");
         user.setEmail("email");
         user.setPassword("password");
-        user.setImage(new byte[]{});
+        user.setImage(null);
         user.setRole("role");
         user.setLogs(null);
 
@@ -38,7 +39,7 @@ class UserTests {
         assertEquals("username", user.getUsername());
         assertEquals("email", user.getEmail());
         assertEquals("password", user.getPassword());
-        assertSame(new byte[]{}, user.getImage());
+        assertSame(null, user.getImage());
         assertEquals("role", user.getRole());
         assertNull(user.getLogs());
     }
