@@ -17,7 +17,7 @@ public class GameService {
 
     public Game createGame(GameDTO dto) {
         Game game = new Game();
-        game.setOwner(userService.findById(dto.getOwner()));
+        game.setOwner(userService.getById(dto.getOwner()));
         game.setEnemy(dto.getEnemy());
         game.setWin(dto.isWin() ? 1 : 0);
         game.setDate(new Date());

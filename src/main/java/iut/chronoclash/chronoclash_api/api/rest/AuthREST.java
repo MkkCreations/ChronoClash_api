@@ -85,7 +85,7 @@ public class AuthREST {
         }
 
         // Creation of the User
-        User user = new User(dto.getName(), dto.getUsername(), dto.getEmail(), passwordEncoder.encode(dto.getPassword()), dto.getImage(), "USER", null, null, null);
+        User user = new User(dto.getName(), dto.getUsername(), dto.getEmail(), passwordEncoder.encode(dto.getPassword()), dto.getImage(), "USER", null, null, null, null);
         userService.create(user);
 
         // Creation of the Log
@@ -108,11 +108,10 @@ public class AuthREST {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestBody RefreshTokenDTO refreshToken) {
+    public ResponseEntity<?> logout(@AuthenticationPrincipal User user, @RequestBody RefreshTokenDTO refreshToken) {
         String refreshTokenString = refreshToken.getRefreshToken();
         if (jwtHelper.validateRefreshToken(refreshTokenString) && refreshTokenService.existsById(jwtHelper.getTokenIdFromRefreshToken(refreshTokenString))) {
             // valid and exists in db
-            User user = userService.findById(jwtHelper.getUserIdFromRefreshToken(refreshTokenString));
             refreshTokenService.deleteById(jwtHelper.getTokenIdFromRefreshToken(refreshTokenString));
 
             // Creation of the Log
@@ -124,7 +123,7 @@ public class AuthREST {
 
             return ResponseEntity.ok().build();
         }
-        throw new BadCredentialsException(invalidToken);
+        return ResponseEntity.badRequest().body(new ErrorResponseDTO(invalidToken));
     }
 
     @PostMapping("/logout-all")
@@ -148,7 +147,7 @@ public class AuthREST {
         String refreshTokenString = dto.getRefreshToken();
         if (jwtHelper.validateRefreshToken(refreshTokenString) && refreshTokenService.existsById(jwtHelper.getTokenIdFromRefreshToken(refreshTokenString))) {
             // valid and exists in db
-            User user = userService.findById(jwtHelper.getUserIdFromRefreshToken(refreshTokenString));
+            User user = userService.getById(jwtHelper.getUserIdFromRefreshToken(refreshTokenString));
             String accessToken = jwtHelper.generateAccessToken(user);
             return ResponseEntity.ok(new TokenDTO(user, accessToken, refreshTokenString));
         }
@@ -162,7 +161,7 @@ public class AuthREST {
             // valid and exists in db
             refreshTokenService.deleteById(jwtHelper.getTokenIdFromRefreshToken(refreshTokenString));
 
-            User user = userService.findById(jwtHelper.getUserIdFromRefreshToken(refreshTokenString));
+            User user = userService.getById(jwtHelper.getUserIdFromRefreshToken(refreshTokenString));
 
             // Creation of the Log
             Operation operation = new Operation();
